@@ -54,6 +54,6 @@ if path:
     envelope.send('smtp.163.com', login=args.from_addr, password=password_dict[args.from_addr], tls=True)
     print('The email is sent to %s.'%args.to_addr)
 
-    if os.path.isdir(path):
+    if path.is_dir():
         # delete the compressed file finally
         os.remove(compath)
