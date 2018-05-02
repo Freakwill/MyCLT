@@ -49,5 +49,5 @@ def searchx(path, op, check=None, recursive=False):
 
 USER_PATH = pathlib.Path('~').expanduser()
 defaultPath = USER_PATH / 'Folders'
-PATHON_PATH = "/Library/Frameworks/Python.framework/Versions/3.6/bin/"
-PACKAGE_PATH = "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages"
+PATHON_PATH = pathlib.Path("/Library/Frameworks/Python.framework/Versions/3.6/bin/")
+PACKAGE_PATH = pathlib.Path("/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages")
