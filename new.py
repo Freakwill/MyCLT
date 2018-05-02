@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-''' print a document
+''' create a file
+example:
+python Scripts/new.py -f hello/readme.md  # even folder hello not exists
 '''
 
 import argparse
@@ -9,17 +11,21 @@ import pathlib
 heads = {'.py':'# -*- coding: utf-8 -*-'}
 
 parser = argparse.ArgumentParser(description='Create a file')
-parser.add_argument('-f', action='store', dest='filename', default='script.txt', metavar='FILE')
-parser.add_argument('-d', action='store', dest='directory', default='~', metavar='DIRECTORY')
+parser.add_argument('-f', action='store', dest='filename', default='script.txt', metavar='FILE', type=pathlib.Path)
 parser.add_argument('-s', nargs='+', dest='content', action='store', default='', metavar='CONTENT')
 parser.add_argument('-l', action='store', dest='head', metavar='HEAD')
 
 args = parser.parse_args()
 
-p = pathlib.Path(args.directory, args.filename).expanduser()
+p = args.filename
 if args.head:
     s = '%s\n\n%s'%(args.head, '\n'.join(args.content))
 else:
-    head = heads[p.suffix]
+    head = heads.get(p.suffix, '')
     s = '%s\n\n%s'%(head, '\n'.join(args.content))
+try:
+    p.touch()
+except FileNotFoundError:
+    p.parent.mkdir(parents=True)
+    p.touch()
 p.write_text(s)

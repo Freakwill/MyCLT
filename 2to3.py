@@ -13,9 +13,9 @@ parser.add_argument('-n', action='store', dest='name', metavar='NAME', required=
 
 args = parser.parse_args()
 # name='pyswip'
-path = os.path.join(base.PACKAGE_PATH, args.name)
+path = base.PACKAGE_PATH / args.name
 
-cmd = sh.Command('2to3', search_paths=['/Library/Frameworks/Python.framework/Versions/3.6/bin'])
+cmd = sh.Command('2to3', search_paths=[base.PATHON_PATH])
 cmd = cmd.bake('-n')
 cmd = cmd.bake('-w')
 cmd(path)
