@@ -7,7 +7,7 @@ example:
 $ python findmath.py -s filter
 '''
 import os
-import os.path
+import pathlib
 import argparse
 
 import logging
@@ -23,9 +23,8 @@ from pdfminer.pdfinterp import PDFTextExtractionNotAllowed
 import base
 
 
-def parse(filename):
-    fp = open(filename, 'rb')
-    praser = PDFParser(fp)
+def parse(fo):
+    praser = PDFParser(fo)
     doc = PDFDocument()
     praser.set_document(doc)
     doc.set_parser(praser)
@@ -49,20 +48,21 @@ def parse(filename):
 
 
 parser = argparse.ArgumentParser(description='find a string in files with certain extension names in a path')
-parser.add_argument('-f', dest='folder', action='store', default='', metavar='PATH')
+parser.add_argument('-f', dest='folder', action='store', default='', metavar='PATH', type=pathlib.Path)
 parser.add_argument('-s', dest='string', action='store', metavar='STRING')
 parser.add_argument('-r', dest='recursive', type=bool, action='store', default=True)
 
 args = parser.parse_args()
 
-mathPath = os.path.expanduser('~/Folders/Math')
-path = os.path.join(mathPath, args.folder)
+mathPath = pathlib.Path('~/Folders/Math').expanduser()
+path = mathPath / args.folder
 string = args.string
 
 
 def op(fname):
-    if fname.endswith('.pdf'):
-        pages = parse(fname)
+    if fname.suffix == '.pdf':
+        with fname.open('rb') as fo:
+            pages = parse(fo)
         for k, page in enumerate(pages):
             if string in page:
                 try:
