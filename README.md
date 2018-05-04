@@ -18,11 +18,22 @@ send_mail.py -p File/Folder -t toWhom -s Subject
 
 delete files with some special extension names (under a certain directory)
 
+### search
+search file in general case.
+
+python Scripts/search.py -p "Folders/Math Note" -x "Game*"
+
+### findfile
+find a file in a more direct way
+
+python Scripts/findfile.py -e md tex -p /Users/william/Folders
+
 
 ## common programs
 
 base.py
 
+- searchFiles # parent parser for searching files
 - search # wrapper of os.walk
 - some common paths:pathlib.Path
 
