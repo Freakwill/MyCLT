@@ -2,6 +2,19 @@
 
 import os
 import pathlib
+import argparse
+import re
+
+USER_PATH = pathlib.Path('~').expanduser()
+defaultPath = USER_PATH / 'Folders'
+PATHON_PATH = pathlib.Path("/Library/Frameworks/Python.framework/Versions/3.6/bin/")
+PACKAGE_PATH = pathlib.Path("/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages")
+
+searchFiles = argparse.ArgumentParser(description='find a file or files with certain conditions.', add_help=False)
+searchFiles.add_argument('-p', dest='path', action='store', default=USER_PATH, metavar='PATH', type=pathlib.Path, help='the folder where you search files')
+# searchFiles.add_argument('-s', dest='string', action='store', metavar='STRING', help='a string in wanted files')
+searchFiles.add_argument('-x', dest='filename', action='store', metavar='FILENAME', type=re.compile, help='regex of the filenames')
+searchFiles.add_argument('-r', dest='recursive', action='store_true', default=False, help='recursively search or not')
 
 def search(path, op, check=None, recursive=False):
     '''search files in the path and operate them with op
@@ -46,8 +59,3 @@ def searchx(path, op, check=None, recursive=False):
                         print(ex)
             break
 
-
-USER_PATH = pathlib.Path('~').expanduser()
-defaultPath = USER_PATH / 'Folders'
-PATHON_PATH = pathlib.Path("/Library/Frameworks/Python.framework/Versions/3.6/bin/")
-PACKAGE_PATH = pathlib.Path("/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages")

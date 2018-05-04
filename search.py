@@ -1,32 +1,28 @@
 # -*- coding: utf-8 -*-
 
 '''
-example:
-$ python find.py -s {...} -e {txt} -p {path} [-r {False}]
+Search Engin for files
 '''
 import os
-import os.path
 import argparse
+import re
+import pathlib
 
 import base
 
-parser = argparse.ArgumentParser(description='find a string in files with certain extension names in a path', parents=[base.searchFiles])
-parser.add_argument('-e', dest='extname', nargs='+', action='store', metavar='EXT', default=[])
-parser.add_argument('-s', dest='string', action='store', metavar='STRING')
+parser = argparse.ArgumentParser(description='find a file or files with the names(regex) and strings in them.', parents=[base.searchFiles])
+parser.add_argument('-s', dest='string', action='store', metavar='STRING', help='a string in wanted files')
+parser.set_defaults(recursive=True)
 
 args = parser.parse_args()
 
-names = args.extname
 path = args.path
 string = args.string
 
 def check(f):
-    if names == []:
+    if args.filename is None or args.filename.match(f.name):
         return True
     else:
-        for name in names:
-            if f.endswith('.'+name):
-                return True
         return False
 
 def op(fname):

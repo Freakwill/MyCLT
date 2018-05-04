@@ -46,16 +46,17 @@ def parse(fo):
             pages.append(p)
     return pages
 
+mathPath = pathlib.Path('~/Folders/Math').expanduser() # where you save math references
 
-parser = argparse.ArgumentParser(description='find a string in files with certain extension names in a path')
-parser.add_argument('-f', dest='folder', action='store', default='', metavar='PATH', type=pathlib.Path)
+parser = argparse.ArgumentParser(description='find math references (.pdf files) with a certain string in a path', parents=[base.searchFiles])
+# parse.set_default(path=mathPath)
 parser.add_argument('-s', dest='string', action='store', metavar='STRING')
-parser.add_argument('-r', dest='recursive', type=bool, action='store', default=True)
+parser.add_argument('-d', dest='folder', action='store', metavar='FOLDER')
 
 args = parser.parse_args()
 
-mathPath = pathlib.Path('~/Folders/Math').expanduser()
-path = mathPath / args.folder
+path = mathPath / args.folder if args.folder else mathPath
+
 string = args.string
 
 
