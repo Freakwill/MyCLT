@@ -1,3 +1,4 @@
+#! /usr/bin/python
 # -*- coding: utf-8 -*-
 
 ''' transform jpeg to eps
@@ -21,11 +22,15 @@ name = args.source
 ext = name.suffix
 if ext in {'.jpeg', '.jpg'}:
     im = Image.open(name)
+elif ext in {'.png'}:
+    im = Image.open(name)
+    im.convert("RGB")
 else:
     try:
         im = Image.open(name.with_suffix('.jepg'))
     except:
         im = Image.open(name.with_suffix('.jpg'))
+
 if args.dest:
     im.save(args.dest.with_suffix('.eps'), 'EPS')
 else:
