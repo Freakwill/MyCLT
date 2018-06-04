@@ -28,6 +28,9 @@ find a file in a more direct way
 
 python Scripts/findfile.py -e md tex -p /Users/william/Folders
 
+### baike
+just try python baike.py -i Python (or any item in baiduepdia)
+
 
 ## common programs
 
