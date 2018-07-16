@@ -36,7 +36,7 @@ send_mail.py -p File/Folder -t toWhom -s Subject
 ### login_wifi
 
 login wifi automatically
-This is my dream of this summer! :congratulation:
+This is my dream of this summer! :congratulations:
 
 ## common programs
 
