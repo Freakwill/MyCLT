@@ -19,8 +19,8 @@ password_dict = {'songcwzjut@163.com':'mail2017'}  # dictionary for passwords of
 
 parser = argparse.ArgumentParser(description='send mail with envelopes')
 parser.add_argument('-p', dest='pathname', action='store', metavar='PATH', type=pathlib.Path)
-parser.add_argument('-f', dest='from_addr', action='store', default='songcwzjut@163.com', metavar='FROM_ADDRESS')
-parser.add_argument('-t', dest='to_addr', action='store', default='songcongwei54@sina.com', metavar='TO_ADDRESS')
+parser.add_argument('-f', dest='from_addr', action='store', default='songcwzjut@163.com', metavar='FROM_ADDRESS', help='from which email')
+parser.add_argument('-t', dest='to_addr', action='store', default='songcongwei54@sina.com', metavar='TO_ADDRESS', help='to which email')
 parser.add_argument('-s', dest='subject', action='store', default='hello', metavar='SUBJECT')
 parser.add_argument('-b', dest='body', action='store', default='Best Wishes!', metavar='BODY')
 parser.add_argument('-l', dest='longbody', action='store', default='body.txt', metavar='LONGBODY', type=pathlib.Path)
@@ -28,9 +28,7 @@ parser.add_argument('-l', dest='longbody', action='store', default='body.txt', m
 args = parser.parse_args()
 
 if args.longbody.is_file():
-    with open(args.longbody) as fo:
-        longbody = fo.read()
-    body = args.body + '/n' + longbody
+    body = args.body + '/n/n' + args.longbody.read_text()
 else:
     body = args.body
 
@@ -57,3 +55,4 @@ if path:
     if path.is_dir():
         # delete the compressed file finally
         os.remove(compath)
+        print('compressed file is removed.')
