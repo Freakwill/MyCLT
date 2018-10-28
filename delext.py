@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 ''' delete files with .xxx extension name in a path

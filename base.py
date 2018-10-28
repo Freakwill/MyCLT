@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -12,12 +13,13 @@ PACKAGE_PATH = pathlib.Path("/Library/Frameworks/Python.framework/Versions/3.6/l
 
 searchFiles = argparse.ArgumentParser(description='find a file or files with certain conditions.', add_help=False)
 searchFiles.add_argument('-p', dest='path', action='store', default=USER_PATH, metavar='PATH', type=pathlib.Path, help='the folder where you search files')
-# searchFiles.add_argument('-s', dest='string', action='store', metavar='STRING', help='a string in wanted files')
 searchFiles.add_argument('-x', dest='filename', action='store', metavar='FILENAME', type=re.compile, help='regex of the filenames')
 searchFiles.add_argument('-r', dest='recursive', action='store_true', default=False, help='recursively search or not')
 
+
 def search(path, op, check=None, recursive=False):
     '''search files in the path and operate them with op
+
     path: path
     op: function, operate pathlib.Path
     check: pathlib.Path -> Bool, check the filename
@@ -35,6 +37,7 @@ def search(path, op, check=None, recursive=False):
                 if check is None or check(wholename):
                     op(wholename)
             break
+
 
 def searchx(path, op, check=None, recursive=False):
     '''safe version of search in save mode

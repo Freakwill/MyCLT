@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 ''' find a file with a fuzzy name (pattern) or a string
@@ -30,10 +31,7 @@ def check(f):
     if exts == []:
         return True
     else:
-        for ext in exts:
-            if f.suffix == '.' + ext:
-                return True
-        return False
+        return f.suffix in exts
 
 
 base.search(args.path, op=print, check=check, recursive=args.recursive)

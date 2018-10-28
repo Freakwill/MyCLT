@@ -1,5 +1,10 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+'''get info of items from baidu baike
+
+python baike.py -i [any item]
+'''
 
 import argparse
 
@@ -9,7 +14,7 @@ import requests
 BAIKE_URL = 'https://baike.baidu.com'
 ITEM_URL = BAIKE_URL + '/item'
 
-parser = argparse.ArgumentParser(description='WeChat')
+parser = argparse.ArgumentParser(description='Get Information from Baidupedia')
 parser.add_argument('-i', dest='item', action='store', default='百度百科', metavar='ITEM')
 args = parser.parse_args()
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 '''
@@ -12,6 +13,7 @@ import base
 
 parser = argparse.ArgumentParser(description='find a file or files with the names(regex) and strings in them.', parents=[base.searchFiles])
 parser.add_argument('-s', dest='string', action='store', metavar='STRING', help='a string in wanted files')
+parser.add_argument('-e', dest='extname', nargs='+', action='store', metavar='EXT', default=[])
 parser.set_defaults(recursive=True)
 
 args = parser.parse_args()
@@ -40,12 +42,14 @@ def op(fname):
                 print('I just can not open %s\n'%fname, e)
                 return
         if lines:
-            if string in lines[0]:
-                print(fname, '#line 1')
-            if len(lines) > 1:
-                for k, line in enumerate(lines[1:], 2):
-                        if string in line:
-                            print('--- #line %d'%k)
+            flag = False
+            for k, line in enumerate(lines, 1):
+                if string in line:
+                    if not flag:
+                        print(fname, ' #line %d'%k)
+                        flag = True
+                    else:
+                        print('--- #line %d'%k)
     else:
         print(fname)
 

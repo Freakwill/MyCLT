@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 ''' create a file
@@ -8,7 +9,7 @@ python Scripts/new.py -f hello/readme.md  # even folder hello not exists
 import argparse
 import pathlib
 
-heads = {'.py':'# -*- coding: utf-8 -*-'}
+heads = {'.py':'#!/usr/bin/env python3'}
 
 parser = argparse.ArgumentParser(description='Create a file')
 parser.add_argument('-f', action='store', dest='filename', default='script.txt', metavar='FILE', type=pathlib.Path)
