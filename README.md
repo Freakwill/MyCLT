@@ -38,6 +38,10 @@ send_mail.py -p File/Folder -t toWhom -s Subject
 login wifi automatically
 This is my dream of this summer! :congratulations:
 
+## beyond python
+* head.hs -- Haskell implement of `head`
+* head.lua -- Lua implement of `head`
+
 ## common programs
 
 base.py
