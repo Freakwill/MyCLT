@@ -13,9 +13,14 @@ resp = requests.get('http://ss.weiwei.in')
 table = bs4.BeautifulSoup(resp.content, 'lxml').find_all('table')[1]
 df = anytable.html2dataframe(table)
 
-parser = argparse.ArgumentParser(description='Get vpn')
-parser.add_argument('-l', dest='location', default='Los Angeles', action='store', help='help')
+parser = argparse.ArgumentParser(description='Get vpn from http://ss.weiwei.in')
+parser.add_argument('-l', dest='location', default=None, action='store_const', const='Los Angeles', help='Location of server')
 
+show_keys = ['IP', 'Port', 'Method', 'Passwd', 'Location']
 args = parser.parse_args()
 
-print(df[df['Location']==args.location])
+if args.location:
+    df = df[list(map(lambda x:args.location in x, df['Location']))]
+
+print(df[show_keys])
+    

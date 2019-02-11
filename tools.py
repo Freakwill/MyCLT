@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+
+"""Tools for Scripts
+"""
+
 import pathlib
 
 import sh
@@ -27,6 +31,7 @@ def script_list(n=1):
 
 
 def set_env():
+    # set environment
     for f in scriptsFolder.iterdir():
         if f.suffix == '.py':
             lines = f.read_text(encoding='utf-8').strip().split('\n')
