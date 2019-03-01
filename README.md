@@ -41,9 +41,13 @@ This is my dream of this summer! :congratulations:
 ### get_vpn
 get vpn server for shadowsocks
 
+### summary
+get summary of text, also see `summary_cn`
+
 ## beyond python
 * head.hs -- Haskell implement of `head`
 * head.lua -- Lua implement of `head`
+* wiki.rb -- Ruby cli for wikipedia
 
 ## common programs
 
