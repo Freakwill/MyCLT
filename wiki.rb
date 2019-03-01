@@ -16,9 +16,10 @@ class WikiCLI < Thor
     # ruby wiki.rb find --item Python
     desc "Wiki", "Ruby cli for Wikipedia"
     option :item, :aliases => :i
+    option :part, :aliases => :p, :default => 'summary'
     def find
         page = Wikipedia.find(n=options[:item])
-        puts page.summary
+        puts page.send(options[:part])
     end
 end
  
