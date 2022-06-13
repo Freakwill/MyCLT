@@ -1,51 +1,146 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Upgrade packages
 
-import argparse
+just run `pipx.py` in clt
 
-import subprocess
+Menu:
+    q: quit
+    s: sudo mode
+    u: usual mode
+    l: list the packages not upgraded
+    m: install the previous packages again
+"""
+
+
+import sh
 import collections
-
-parser = argparse.ArgumentParser(description='install packages with pip')
-parser.add_argument('-s', dest='sudo', action='store_true', default=False)
-parser.set_defaults(recursive=True)
-
-child = subprocess.Popen('pip3 list --format columns --outdate', shell=True, stdout=subprocess.PIPE)
-out, err = child.communicate()
-out = out.decode()
 
 Package = collections.namedtuple('package', ['name', 'version', 'latest', 'type_'])
 
-packages = [Package._make(package.split()) for package in out.split('\n')[2:-1] if package]
-for p in packages:
-    print(p.name, p.version)
+MIRRORS = {'tsinghua': 'https://pypi.tuna.tsinghua.edu.cn/simple'}
 
-args = parser.parse_args()
-mode = args.sudo
+parallel = False
+from threading import Semaphore
+pool = Semaphore(10)
 
-print('Type names of packages wantted.')
-while True:
-    ps = input('>=> ')
-    if ps == 'q':
-        break
-    elif ps == 's':
-        mode = 1
-        print('in sudo mode')
-    elif ps == 'u':
-        mode = 0
-        print('not in sudo mode')
-    elif ps == 'l':
-        for p in packages:
-            print(p.name, p.version)
+
+def done(cmd, success, exit_code):
+    pool.release()
+
+def _install(current, packages):
+    global PARAMS
+
+    cmd = sh.pip3.install
+    if sudo:
+        if 'password' not in globals():
+            globals()['password'] = input('Your password:')
+        cmd = sh.sudo.bake("-S", _in=password).pip3.install
+        # cmd = sh.contrib.sudo(password="********", _with=True).pip3.install
+
+    successful = []
+
+    if parallel:
+        def do(p):
+            pool.acquire()
+            try:
+                cmd(*PARAMS, p, _bg=True, _done=done)
+                successful.append(p)
+                print(f'{p} has been installed.')
+            except Exception as e:
+                print(e)
+        for p in current:
+            do(p).wait()
     else:
-        if mode:
-            cmd = ['pip3', 'install', '--upgrade']
+        for p in current:
+            try:
+                outdate = cmd(*PARAMS, p)
+                successful.append(p)
+                print(f'{p} has been installed.')
+            except Exception as e:
+                print(e)
+
+    return [package for package in packages if package.name not in successful]
+
+
+def get_outdate(source=None):
+    # get outdate packages
+    if source:
+        outdate = sh.pip3.list('--format', 'columns', '--outdate', '-i', MIRRORS[source])
+    else:
+        outdate = sh.pip3.list('--format', 'columns', '--outdate')
+    return [Package._make(package.split()) for package in outdate.split('\n')[2:-1] if package]
+
+def display(packages):
+    print('''
+        Name  Version  Latest
+        ----------------------
+        ''')
+    for package in packages:
+        print('    ', package.name, package.version, package.latest)
+
+sudo = False
+current = []
+PARAMS = ('--upgrade',)
+
+def install(source=None):
+    global sudo, current, PARAMS
+
+    packages = get_outdate(source=source)
+
+    display(packages)
+
+    if source:
+        PARAMS = (*PARAMS, '-i', MIRRORS[source])
+
+    print('''====Type one or some names of packages wantted.====
+        q: quit
+        s: sudo mode
+        u: usual mode
+        l: list the packages
+        m: install the previous packages again
+        -----------------------
+        ''')
+    while True:
+        ps = input('>=> ')
+        # if ps.startswith('%'):
+        #     a, _, b = ps.lstrip('%').partition('=')
+        #     a = a.strip()
+        #     b = b.strip()
+        #     if b.isdigit():
+        #         b = int(b)
+        #     globals()[a] = b
+
+        if ps == 'q':
+            print('Bye.')
+            break
+        elif ps == 's':
+            sudo = True
+            print('in sudo mode')
+        elif ps == 'u':
+            sudo = False
+            print('not in sudo mode')
+        elif ps == 'l':
+            display(packages)
+        elif ps == 'm':
+            if not current:
+                print('m could not be used now!')
+                continue
+
+            packages = _install(current, packages)
+
         else:
-            cmd = ['sudo', 'pip3', 'install', '--upgrade']
-        for p in ps.split():
-            child = subprocess.Popen(cmd + [p], shell=True, stdout=subprocess.PIPE)
-            out, err = child.communicate()
-            if err:
-                err = err.decode()
-                print(err)
+            current = ps.split()
+            for c in current.copy():
+                if not any(c == package.name for package in packages):
+                    print(f'{c} is not in the list of packages!')
+                    current.remove(c)
+                else:
+                    print(f'{c} will be installed.')
+
+            packages = _install(current, packages)
+
+import fire
+fire.Fire(install)
+

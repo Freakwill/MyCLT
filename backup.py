@@ -10,24 +10,30 @@ import pathlib
 
 import shutil
 
-usbPath = '/Volumes/台电酷闪/'
+usbName = 'William-Te'
+
+usbPath = pathlib.Path('/Volumes') / usbName
 
 parser = argparse.ArgumentParser(description='Back up documents')
-parser.add_argument('-s', action='store', dest='src', metavar='SRC', required=True)
-parser.add_argument('-d', action='store', dest='dst', metavar='DST')
+parser.add_argument('-s', action='store', dest='src', metavar='SRC', required=True, type=pathlib.Path)
+parser.add_argument('-d', action='store', dest='dst', metavar='DST', default=None, type=pathlib.Path)
 parser.add_argument('-i', action='store', dest='ignore', nargs='*', metavar='IGNORE')
-parser.add_argument('-u', action='store', dest='usbPath', metavar='USB_PATH', default=usbPath)
+parser.add_argument('-u', action='store', dest='usbPath', metavar='USB_PATH', default=usbPath, type=pathlib.Path)
 
 
 args = parser.parse_args()
-src = pathlib.Path('~', args.src).expanduser()
+src = args.src.resolve(strict=True)
+if not src.exists():
+    raise OSError(f'No such path {src}')
+
 if args.dst:
-    dst = pathlib.Path(args.usbPath, args.dst)
+    dst = args.usbPath / args.dst
 else:
-    dst = pathlib.Path(args.usbPath, args.src)
+    dst = args.usbPath
 
 if dst.exists():
-    shutil.rmtree(dst)
+    print(Warning(f'{dst} has existed! It will be deleted before backup.'))
+    shutil.rmtree(dst, ignore_errors=True)
 
 if args.ignore:
     shutil.copytree(src, dst, ignore=shutil.ignore_patterns(*args.ignore))
